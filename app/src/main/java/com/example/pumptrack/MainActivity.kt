@@ -25,6 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PumpTrackTheme {
 
+                //TODO: library für navigation nutzen
                 val currentScreen = remember { mutableStateOf(SCREENS.WORKOUTS) }
                 val currentWorkout = remember { mutableStateOf(Workout(0,"Fehler")) }
                 val workoutDao = AppDatabase.DatabaseBuilder.getInstance(this).workoutDao()
@@ -32,11 +33,7 @@ class MainActivity : ComponentActivity() {
                     factory = WorkoutViewModelFactory(workoutDao)
                 )
                 when (currentScreen.value) {
-                    SCREENS.WORKOUTS -> WorkoutListScreen(
-                        currentScreen,
-                        currentWorkout,
-                        workoutViewModel
-                    )
+                    SCREENS.WORKOUTS -> WorkoutListScreen(currentScreen, currentWorkout, workoutViewModel)
                     SCREENS.WORKOUT_DETAIL -> WorkoutDetailScreen(currentWorkout,currentScreen, workoutViewModel)
                     SCREENS.WORKOUT_LOG -> WorkoutLogScreen(currentScreen,workoutViewModel)
                     SCREENS.STATISTICS -> StatisticsScreen(currentScreen, workoutViewModel)

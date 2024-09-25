@@ -45,7 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.example.pumptrack.AddFab
+import com.example.pumptrack.composables.AddFab
 import com.example.pumptrack.data.Exercise
 import com.example.pumptrack.data.Workout
 import com.example.pumptrack.data.WorkoutViewModel
@@ -74,10 +74,8 @@ fun WorkoutDetailScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Display the list of exercises
             ExerciseList(innerPadding = it, exercises, workoutViewModel)
 
-            // Check if the dialog should be shown
             if (showDialog.value) {
                 AddExerciseDialog(showDialog, currentWorkout, workoutViewModel, exercises)
             }

@@ -32,7 +32,7 @@ interface WorkoutDao {
     @Update
     fun updateExercisePosition(exercise: Exercise)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addSet(set: Set)
 
     @Delete
@@ -41,7 +41,7 @@ interface WorkoutDao {
     @Query("SELECT * FROM sets WHERE exerciseId = :exerciseId")
     fun getSetsForExercise(exerciseId: Int): Flow<List<Set>>
 
-    @Query("SELECT * FROM sets WHERE exerciseId = :exerciseId LIMIT 5")
+    @Query("SELECT * FROM sets WHERE exerciseId = :exerciseId ORDER BY setId DESC LIMIT 5")
     fun getLastFiveSetsForExercise(exerciseId: Int): Flow<List<Set>>
 
     @Query("SELECT * FROM sets")

@@ -1,10 +1,7 @@
 package com.example.pumptrack.screens
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -27,7 +23,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -53,10 +47,6 @@ import androidx.compose.ui.unit.dp
 import com.example.pumptrack.data.Exercise
 import com.example.pumptrack.data.Set
 import com.example.pumptrack.data.WorkoutViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -74,7 +64,7 @@ fun WorkoutLogScreen(
         numberOfSets.add(4)
     }
     val selectedExercise = remember {
-        mutableStateOf(exercises[0].name)
+        mutableStateOf(exercises.find { it.index == 0 }?.name ?: exercises.first().name)
     }
     val indexOfExercise = remember {
         mutableIntStateOf(exercises.indexOfFirst { it.name == selectedExercise.value })
@@ -154,7 +144,7 @@ fun ExerciseChips(
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            itemsIndexed(exercises) { index, it ->
+            itemsIndexed(exercises.sortedBy { it.index }) { index, it ->
                 InputChip(
                     selected = it.name == selectedExercise.value,
                     onClick = { selectedExercise.value = it.name },
@@ -321,8 +311,10 @@ fun LastSetsList(
         modifier = Modifier
             .padding(top = 30.dp, start = 12.dp)
     ) {
-        if(sets.isNotEmpty()) {Text(text = "Last 5")}
-        sets.forEach { set ->
+        if (sets.isNotEmpty()) {
+            Text(text = "Last 5")
+        }
+        sets.reversed().forEach { set ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -340,8 +332,8 @@ fun LastSetsList(
 
 @SuppressLint("SimpleDateFormat")
 fun getCurrentDateAsString(): String {
-    val dateFormat = SimpleDateFormat("dd.MM.yy") // Format für das Datum definieren
-    val currentDate = Date() // Aktuelles Datum und Uhrzeit erhalten
+    val dateFormat = SimpleDateFormat("dd.MM.yy")
+    val currentDate = Date()
 
-    return dateFormat.format(currentDate) // Datum in das gewünschte Format konvertieren und als String zurückgeben
+    return dateFormat.format(currentDate)
 }

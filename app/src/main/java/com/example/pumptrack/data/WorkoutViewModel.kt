@@ -11,14 +11,11 @@ import kotlinx.coroutines.withContext
 
 class WorkoutViewModel(private val workoutDao: WorkoutDao) : ViewModel() {
 
-    // Expose the workouts Flow to the UI
     val workouts: Flow<List<Workout>> = workoutDao.getAllWorkouts()
 
-    // MutableStateFlow for exercises
     private val _exercises = MutableStateFlow<List<Exercise>>(emptyList())
     val exercises: StateFlow<List<Exercise>> get() = _exercises
 
-    // Function to add a new workout
     fun addWorkout(workout: Workout) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -27,7 +24,6 @@ class WorkoutViewModel(private val workoutDao: WorkoutDao) : ViewModel() {
         }
     }
 
-    // Function to delete a workout
     fun deleteWorkout(workout: Workout) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -42,7 +38,6 @@ class WorkoutViewModel(private val workoutDao: WorkoutDao) : ViewModel() {
                 .collectLatest { exercises ->
                     if (_exercises.value != exercises) {
                         _exercises.value = exercises
-                        // Do not call updateExercise here to avoid infinite loops
                     }
                 }
         }
@@ -56,7 +51,6 @@ class WorkoutViewModel(private val workoutDao: WorkoutDao) : ViewModel() {
                 workoutDao.updateExercisePosition(ex)
                 i++
             }
-            // Ensure the state flow is updated with the latest state after reordering
             withContext(Dispatchers.Main) {
                 _exercises.value = exercises
             }
@@ -80,6 +74,7 @@ class WorkoutViewModel(private val workoutDao: WorkoutDao) : ViewModel() {
             }
         }
     }
+
 
     fun addSet(set: Set) {
         viewModelScope.launch {
@@ -110,7 +105,6 @@ class WorkoutViewModel(private val workoutDao: WorkoutDao) : ViewModel() {
     }
 }
 
-// Factory für das WorkoutViewModel
 class WorkoutViewModelFactory(
     private val workoutDao: WorkoutDao
 ) : ViewModelProvider.Factory {

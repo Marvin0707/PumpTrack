@@ -1,4 +1,4 @@
-package com.example.pumptrack
+package com.example.pumptrack.composables
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
